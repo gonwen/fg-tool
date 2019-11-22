@@ -1,7 +1,7 @@
 {
-  "name": "ciip-vue",
-  "version": "1.2.8",
-  "description": "建云网——建筑产业工业互联网平台",
+  "name": "fg-tool",
+  "version": "1.0.2",
+  "description": "FRONT-END TOOL",
   "author": "gongwen <gongwen_1@163.com>",
   "private": true,
   "scripts": {
