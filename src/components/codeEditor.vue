@@ -31,7 +31,10 @@ import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/idea.css'
 import 'codemirror/theme/seti.css'
 import 'codemirror/mode/javascript/javascript'
+import 'codemirror/mode/vue/vue'
+import 'codemirror/mode/css/css'
 import 'codemirror/mode/htmlmixed/htmlmixed'
+// import 'codemirror/mode/'
 
 // 代码折叠
 import 'codemirror/addon/fold/foldcode'
@@ -130,6 +133,18 @@ export default {
                     mime: 'text/html'
                 },
                 {
+                    n: 'CSS',
+                    v: 'css',
+                    ft: 'css',
+                    mime: 'text/css'
+                },
+                {
+                    n: 'VUE',
+                    v: 'vue',
+                    ft: 'vue',
+                    mime: 'text/vue'
+                },
+                {
                     n: 'JavaScript',
                     v: 'javascript',
                     ft: 'js',
@@ -140,6 +155,12 @@ export default {
                     v: 'application/json',
                     ft: 'json',
                     mime: 'application/json'
+                },
+                {
+                    n: 'JAVA',
+                    v: 'javascript',
+                    ft: 'java',
+                    mime: 'text/x-java'
                 }
             ]
         }
@@ -229,7 +250,7 @@ export default {
 
 <style lang="scss">
 .code-box{
-    margin: 20px 0;
+    /*margin: 20px 0;*/
     .code-body{
         border: 1px solid #f4f4f4;
         box-shadow: 0 0 6px #aaa;

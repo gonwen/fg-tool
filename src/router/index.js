@@ -32,6 +32,14 @@ export default new Router({
             }
         },
         {
+            path: '/codefileview',
+            component: resolve => require(['@/pages/codefileview.vue'], resolve),
+            meta: {
+                title: 'CODE FILE VIEW FRONT-END-TOOL',
+                auth: false
+            }
+        },
+        {
             path: '*',
             redirect: '/'
         }

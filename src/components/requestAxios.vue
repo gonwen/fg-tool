@@ -137,7 +137,7 @@
             <el-button type="primary" @click="handleSumit">SEND</el-button>
             <el-button @click="handleSumit('R')">RESETTING</el-button>
         </el-form>
-        <code-editor init-mode="application/json" init-theme="idea" :show-menu="true" :code-value="result.data" v-show="result.data"></code-editor>
+        <code-editor init-mode="application/json" init-theme="idea" :show-menu="true" :code-value="result.data" v-show="result.data" style="margin-top: 20px;"></code-editor>
         <!--<div class="panl-pre" v-if="result.data" :class="{'is-error': !result.flag}"><pre>{{result.data}}</pre></div>-->
     </div>
 </template>
@@ -175,7 +175,7 @@ export default {
                 header: []
             },
             formRules: {
-                baseurl: [
+                baseurls: [
                     {required: true, message: '请输入baseurl地址 ', trigger: 'blur'},
                     {validator: (rule, value, callback) => {
                             if (!value || this.exWebsite.test(value)) {
