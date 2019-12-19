@@ -4,6 +4,11 @@ import axios from 'axios'
 const AXIOS = axios
 AXIOS.defaults.withCredentials = true
 
+AXIOS.interceptors.response.use(
+    response => response,
+    error => false
+)
+
 /*  封装ajax方法 */
 const requestResponse = (type, urls, data) => {
     let url = urls

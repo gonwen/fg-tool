@@ -5,7 +5,7 @@ Vue.use(Router)
 
 export default new Router({
     linkActiveClass: 'active',
-    mode: 'history',
+    // mode: 'history',
     routes: [
         {
             path: '/',
@@ -36,6 +36,14 @@ export default new Router({
             component: resolve => require(['@/pages/codefileview.vue'], resolve),
             meta: {
                 title: 'CODE FILE VIEW FRONT-END-TOOL',
+                auth: false
+            }
+        },
+        {
+            path: '/test',
+            component: resolve => require(['@/pages/test.vue'], resolve),
+            meta: {
+                title: 'TEST FILE VIEW FRONT-END-TOOL',
                 auth: false
             }
         },

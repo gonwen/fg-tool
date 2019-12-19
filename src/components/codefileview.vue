@@ -1,12 +1,16 @@
 <template>
     <el-container style="padding: 10px;">
-        <el-header>
-            <h3><b>项目资源展示</b>[ source: <el-link type="info">{{filePath}}</el-link> ]</h3>
+        <el-header style="height: auto;padding-bottom: 20px;">
+            <h3><b>本地项目资源展示</b>[ source: <el-link type="info">{{filePath}}</el-link> ]</h3>
             <div>
                 忽略目录：
                 <el-checkbox-group v-model="isIgnoreList" style="display: inline-block">
                     <el-checkbox v-for="(item, index) in ignoreList" :key="index" :label="item" :disabled="item === 'node_modules'"></el-checkbox>
                 </el-checkbox-group>
+            </div>
+            <div>
+                本地项目服务地址[ts-koa2]:
+                <el-input v-model="curSerUrl" style="max-width: 480px;"></el-input>
             </div>
         </el-header>
         <el-container>
@@ -30,7 +34,7 @@
                     </el-tag>
                 </div>
                 <code-editor ref="codeEditor" :codeValue="codeEditotConfig.codeValue" :initMode="codeEditotConfig.initMode" :initTheme="codeEditotConfig.initTheme"></code-editor>
-                <el-button @click="saveFile">保存</el-button>
+                <el-button @click="saveFile" v-if="$route.query.e">保存</el-button>
             </el-main>
         </el-container>
     </el-container>
@@ -47,6 +51,7 @@ export default {
     data () {
         return {
             serUrl: 'http://172.10.10.176:3093/api/file/',
+            curSerUrl: 'http://172.10.10.176:3093',
             list: [],
             filePath: 'E:\\woker\\github\\fg-tool',
             defaultProps: {
@@ -165,7 +170,6 @@ export default {
                 this.selectFileList.splice(index, 1)
                 if (this.selectFileList[0]) this.handleNodeClick(this.selectFileList[0])
                 else {
-                    //
                     this.currFileInfo = {
                         value: '',
                         name: '',
@@ -177,10 +181,11 @@ export default {
                 }
             }
         }
+    },
+    watch: {
+        'curSerUrl' (val) {
+            this.serUrl = `${val}/api/file/`
+        }
     }
 }
 </script>
-
-<style scoped>
-
-</style>
