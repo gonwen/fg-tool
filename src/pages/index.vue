@@ -8,6 +8,7 @@
             <router-link to="/code"><el-button type="primary">CODE EDT</el-button></router-link>
             <router-link to="/request"><el-button type="primary">REQUEST</el-button></router-link>
             <router-link to="/codefileview"><el-button type="primary">CODE FILE VIEW</el-button></router-link>
+			<router-link to="/imagecompress"><el-button type="primary">IMAGE COMPRESS</el-button></router-link>
         </el-card>
     </div>
 </template>

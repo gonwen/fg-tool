@@ -39,11 +39,11 @@ export default new Router({
                 auth: false
             }
         },
-        {
-            path: '/test',
-            component: resolve => require(['@/pages/test.vue'], resolve),
+		{
+            path: '/imagecompress',
+            component: resolve => require(['@/pages/imagecompress.vue'], resolve),
             meta: {
-                title: 'TEST FILE VIEW FRONT-END-TOOL',
+                title: 'IMAGE COMPRESS FRONT-END-TOOL',
                 auth: false
             }
         },
