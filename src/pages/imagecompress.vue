@@ -1,6 +1,6 @@
 <template>
     <div class="cb-container" style="padding: 10px;">
-        <h3 style="margin-top: 30px; margin-bottom: 20px;"><b>图片压缩</b></h3>
+        <h3 style="margin-top: 30px; margin-bottom: 20px;"><b>图片压缩<span style="font-size: 12px;margin-left: 10px;">[Canvas]</span></b></h3>
         <el-row>
             <el-col :span="2"><span style="line-height: 38px;">压缩层级</span></el-col>
             <el-col :span="6">
@@ -10,7 +10,7 @@
         <el-row>
             <el-col :span="2"><span style="line-height: 38px;">上传图片</span></el-col>
             <el-col :span="6" style="padding-top: 6px;">
-                <input type="file" @change="handleChange" ref="files"/>
+                <input type="file" @change="handleChange" ref="files" accept="image/jpg,image/gif,image/png,image/jpeg,image/bmp"/>
             </el-col>
             <el-col :span="4">
                 <a v-if="newFileUrl" :href="newFileUrl" download="newImage">
@@ -55,6 +55,8 @@ export default {
             /*console.log('****originFile*******', this.originFile)*/
             new Compressor(file, {
                 quality: this.quality,
+                // mimeType: 'image/jpeg',
+                convertSize: 5000,
                 success: res => {
                     /*console.log('****res*******', res)*/
                     this.newFile = res
