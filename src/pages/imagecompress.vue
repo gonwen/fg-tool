@@ -22,7 +22,7 @@
         <div v-if="newFile" class="img-view">
             <div class="img-item">
                 <h6>原图效果：<i>[ {{getFileSize(originFile)}} ]</i></h6>
-                <el-image :src="getFileUrl(originFile)" :preview-src-list="[getFileUrl(originFile)]" fit="contain"></el-image>
+                <el-image :src="originFileUrl" :preview-src-list="[originFileUrl]" fit="contain"></el-image>
             </div>
             <div class="img-item">
                 <h6>压缩效果：<i>[ {{getFileSize(newFile)}} ]</i> ————<span> {{getPoint()}} </span></h6>
@@ -52,13 +52,11 @@ export default {
 	    compressoring (file) {
             this.originFile = file
             this.originFileUrl = this.getFileUrl(file)
-            /*console.log('****originFile*******', this.originFile)*/
             new Compressor(file, {
                 quality: this.quality,
                 // mimeType: 'image/jpeg',
                 convertSize: 5000,
                 success: res => {
-                    /*console.log('****res*******', res)*/
                     this.newFile = res
                     this.newFileUrl = this.getFileUrl(res)
                 },

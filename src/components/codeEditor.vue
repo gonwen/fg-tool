@@ -162,7 +162,9 @@ export default {
                     ft: 'java',
                     mime: 'text/x-java'
                 }
-            ]
+            ],
+            isOpenWTW: !!this.$route.query.wtw, // 是否开启逐字模式输入
+            speedWTW: !isNaN(Number(this.$route.query.speed)) ?  this.$route.query.speed : 10 // 逐字模式输入速度
         }
     },
     created () {
@@ -228,11 +230,25 @@ export default {
             a.parentNode.removeChild(a)
             window.URL.revokeObjectURL(fileUrl)
         },
+        // 字符逐字输入模式
+        wordByWordExport (str, num) {
+            let len = str.length
+            let ind = num || 1
+            let speed = this.speedWTW
+            this.setEditotValue(str.substring(0, ind))
+            ind ++
+            if (ind > len) return false
+            setTimeout(() => {
+                this.wordByWordExport(str, ind)
+            }, speed)
+        },
         ceil: (n) => Math.ceil(n)
     },
     watch: {
         'codeValue' (val) {
-            this.setEditotValue(val)
+            if (this.isOpenWTW) {
+                this.wordByWordExport(val)
+            } else this.setEditotValue(val)
             this.allLineCount = this.editor.lineCount()
         },
         'initTheme' (val) {

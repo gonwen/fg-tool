@@ -14,7 +14,7 @@
             </div>
         </el-header>
         <el-container>
-            <el-aside width="280px" style="padding: 10px;">
+            <el-aside width="280px" style="padding: 10px; max-height: 800px;">
                 <el-input v-model="filePath" placeholder="请输入项目地址">
                     <el-button @click="getFileTreeList" slot="append">获取</el-button>
                 </el-input>
