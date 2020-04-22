@@ -343,23 +343,11 @@ export default {
                 .attr('y2', height - margin.bottom)
                 .attr('stroke', '#dddddd')
 
-
             let row = g.selectAll('row')
                 .data(data)
                 .enter()
                 .append('g')
                 .attr('transform', (d, i) => `translate(0, ${margin.top + (i * rowHeight)})`)
-
-
-            // row.append("text")
-            //     .text(d => d.text)
-            //     .attr("y", rowHeight / 2)
-            //     .attr("fill", eugColors.police_blue)
-            //     .attr("font-size", 13)
-            //     .attr("text-anchor", "end")
-            //     .attr("x", margin.left - 40)
-            //     .attr("font-weight", "bold")
-            //     .attr("dominant-baseline", "central")
 
             row.append('rect')
                 .attr('width', d => {
@@ -368,29 +356,13 @@ export default {
                     return  n
                 })
                 .attr('height', rowHeight - 10)
-                .attr("x", d => x(d.start))
-                .attr("y", 5)
-                .attr("fill", eugColors.police_blue)
-                .attr("stroke", "#ffffff")
-                .attr("rx", 4)
+                .attr('x', d => x(d.start))
+                .attr('y', 5)
+                .attr('fill', eugColors.police_blue)
+                .attr('stroke', '#ffffff')
+                .attr('rx', 4)
 
-
-            row.append("text")
-                .text(d => {
-                    let s = new Date(d.start).getTime()
-                    let e = new Date(d.end).getTime()
-                    let step = this.sliderInfo.step
-                    return Math.ceil((e - s)/step) + '天'
-                })
-                .attr("y", rowHeight / 2)
-                .attr("fill", "#ffffff")
-                .attr("font-size", 10)
-                .attr("text-anchor", "middle")
-                .attr("x", d => x(d.end) - ((x(d.end) - x(d.start)) / 2))
-                //.attr("font-weight", "bold")
-                .attr("dominant-baseline", "central")
-
-
+            this.setRowTitileText(row)
             this.setRowText(row, 'end')
             this.setRowText(row, 'start')
 
@@ -424,6 +396,23 @@ export default {
                 .style('fill', 'none')
                 .style('stroke', color)
                 .style('stroke-width', '1')
+        },
+        setRowTitileText (row) {
+            let x = this.getOptionXscale
+            row.append('text')
+                .text(d => {
+                    let s = new Date(d.start).getTime()
+                    let e = new Date(d.end).getTime()
+                    let step = this.sliderInfo.step
+                    return Math.ceil((e - s)/step) + '天'
+                })
+                .attr('y', this.rowHeight / 2)
+                .attr('fill', '#ffffff')
+                .attr('font-size', 10)
+                .attr('text-anchor', 'middle')
+                .attr('x', d => x(d.end) - ((x(d.end) - x(d.start)) / 2))
+                //.attr('font-weight', 'bold')
+                .attr('dominant-baseline', 'central')
         },
         setInitMartk (d) {
             // 当前时间进度刻度
