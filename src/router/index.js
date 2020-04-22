@@ -48,6 +48,22 @@ export default new Router({
             }
         },
         {
+            path: '/share/:id',
+            component: resolve => require(['@/pages/codeShare.vue'], resolve),
+            meta: {
+                title: 'CODE SHARE FRONT-END-TOOL',
+                auth: false
+            }
+        },
+        {
+            path: '/d3',
+            component: resolve => require(['@/pages/d3.vue'], resolve),
+            meta: {
+                title: 'D3 SHOW FRONT-END-TOOL',
+                auth: false
+            }
+        },
+        {
             path: '*',
             redirect: '/'
         }
