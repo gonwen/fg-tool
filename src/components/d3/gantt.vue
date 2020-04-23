@@ -29,7 +29,7 @@
                             <el-radio-button label="more">合模</el-radio-button>
                         </el-radio-group>
                         <br>
-                        <el-button @click="sentMessageModel" size="mini">获取</el-button>
+                        <el-button @click="sentMessageModel" size="mini" v-if="showModel !== 'more' || (showModel === 'more' && isMerge)">获取</el-button>
                     </div>
                     <el-tree
                         v-if="modelInfo.tree && showModel === 'more'"
@@ -269,7 +269,8 @@ export default {
                         oths: '地弹簧钢化玻璃门'
                     }
                 ]
-            }
+            },
+            isMerge: false
         }
     },
     watch: {
@@ -289,6 +290,7 @@ export default {
     methods: {
         submitMoreModel () {
             let arr = this.moreModel.data
+            this.isMerge = true
             this.iframe.postMessage({
                 t: 'loadModels',
                 s: true,
