@@ -7,7 +7,7 @@
                     ref="iframe"
                     style="width: 100%;opacity: 1"
                     height="340"
-                    :src="`static/model/test.html?u=${$route.query.u || base64FileUrl}`"
+                    :src="getIframeUrl()"
                 ></iframe>
             </el-col>
             <el-col :span="12">
@@ -17,25 +17,47 @@
                         :data="modelInfo.tree"
                         node-key="dbId"
                         show-checkbox
+                        @node-click="handleTreeClick"
                         @check="handleTreeCheck"
                         :props="{children: 'children', label: 'name'}">
                     </el-tree>
                     <div v-if="!modelInfo.tree" style="padding: 20px;">
                         <h4>切换操作模式</h4>
-                        <el-switch
-                            style="margin: 10px 0"
-                            v-model="showModel"
-                            active-value="tree"
-                            inactive-value="echart"
-                            active-text="树形"
-                            inactive-text="图表">
-                        </el-switch>
+                        <el-radio-group v-model="showModel" size="mini" style="margin: 10px 0">
+                            <el-radio-button label="tree">树形</el-radio-button>
+                            <el-radio-button label="echart">图表</el-radio-button>
+                            <el-radio-button label="more">合模</el-radio-button>
+                        </el-radio-group>
                         <br>
-                        <el-button @click="sentMessageModel">获取</el-button>
+                        <el-button @click="sentMessageModel" size="mini">获取</el-button>
                     </div>
+                    <el-tree
+                        v-if="modelInfo.tree && showModel === 'more'"
+                        :data="modelInfo.tree"
+                        node-key="dbId"
+                        :props="{children: 'children', label: 'name'}">
+                    </el-tree>
                 </div>
             </el-col>
         </el-row>
+        <div v-if="showModel === 'more'" style="max-width: 1200px;padding: 40px 0;">
+            <el-form :model="moreModel">
+                <h4 style="margin-bottom: 20px;">合模模型信息配置</h4>
+                <el-row v-for="(mitem, mindex) in moreModel.data" :key="mindex">
+                    <el-col :span="6">
+                        <el-form-item>
+                            <el-input v-model="moreModel.data[mindex].oths" placeholder="配置信息备注"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="18">
+                        <el-form-item>
+                            <el-input v-model="moreModel.data[mindex].path" placeholder="输入模型网络地址"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-button size="mini" @click="submitMoreModel" v-if="!modelInfo.tree">合模</el-button>
+            </el-form>
+        </div>
         <div style="max-width: 12000px; padding: 30px 40px;" v-if="sliderInfo.show && showModel === 'echart'">
             <el-row>
                 <el-col :span="16">
@@ -212,8 +234,42 @@ export default {
                 color: '#000000'
             },
             checkedIds: [], // 选中的 dbid
-            showModel: 'echart',
-            base64FileUrl: 'aHR0cHM6Ly9teHpoLXByb2Qub3NzLWNuLWJlaWppbmcuYWxpeXVuY3MuY29tL21vZGVsRm9sZGVyX2IzOTMyZjA5LTNiZjgtNDNmZC04MTE2LTI3MzRmNjNjZDdhNS9vdXRwdXQvM2Quc3Zm'
+            showModel: 'more',
+            modelFileUrl: '',
+            base64FileUrl: 'aHR0cHM6Ly9teHpoLXByb2Qub3NzLWNuLWJlaWppbmcuYWxpeXVuY3MuY29tL21vZGVsRm9sZGVyX2IzOTMyZjA5LTNiZjgtNDNmZC04MTE2LTI3MzRmNjNjZDdhNS9vdXRwdXQvM2Quc3Zm',
+            // 合模配置信息
+            moreModel: {
+                data: [
+                    {
+                        path: 'https://mxzh-prod.oss-cn-beijing.aliyuncs.com/modelFolder_0302677f-f855-4c52-8c90-911560a13efd/output/3d.svf',
+                        oths: '立式多级离心泵'
+                    },
+                    // {
+                    //     path: 'https://mxzh-prod.oss-cn-beijing.aliyuncs.com/modelFolder_ded9c7fd-a43c-4e69-90c1-5f63a307c912/output/3d.svf',
+                    //     oths: '碳钢式隔膜气压罐'
+                    // },
+                    // {
+                    //     path: 'file=https://mxzh-prod.oss-cn-beijing.aliyuncs.com/modelFolder_7c7020cb-0223-4d97-8a88-54371fa8bb7e/output/3d.svf',
+                    //     oths: '金光混流风机（JGXF-2.5-C）'
+                    // },
+                    {
+                        path: 'https://mxzh-prod.oss-cn-beijing.aliyuncs.com/modelFolder_e37a185a-420c-4e13-80ad-852b84affbe2/output/3d.svf',
+                        oths: '给水设备-泵'
+                    },
+                    {
+                        path: 'https://mxzh-prod.oss-cn-beijing.aliyuncs.com/modelFolder_7e2295d4-40a5-410c-8ade-f07f7ffef22a/output/3d.svf',
+                        oths: 'M_离心泵-卧式端吸'
+                    },
+                    {
+                        path: 'https://mxzh-prod.oss-cn-beijing.aliyuncs.com/modelFolder_7b6da5a1-27b2-4cfb-904d-eeec5cbe0893/output/3d.svf',
+                        oths: '天花百叶'
+                    },
+                    {
+                        path: 'https://mxzh-prod.oss-cn-beijing.aliyuncs.com/modelFolder_60209531-7866-420c-8121-41b6e3b5efc3/output/3d.svf',
+                        oths: '地弹簧钢化玻璃门'
+                    }
+                ]
+            }
         }
     },
     watch: {
@@ -226,11 +282,54 @@ export default {
         },
         'modelInfo.tree' (val) {
             if (val) {
-                this.initDataForm()
+                if (this.showModel !== 'more') this.initDataForm()
             }
         }
     },
     methods: {
+        submitMoreModel () {
+            let arr = this.moreModel.data
+            this.iframe.postMessage({
+                t: 'loadModels',
+                s: true,
+                o: {files: arr}
+            }, '*')
+        },
+        getIframeUrl () {
+            let base = 'static/model/test.html?'
+            let qy = this.$route.query
+            let surl = ''
+            if (this.showModel === 'more') surl = 'vtp=more'
+            else {
+                if (qy.u) surl = `u=${qy.u}`
+                else if (qy.file) surl = `file=${qy.file}`
+                else surl = `u=${this.base64FileUrl}`
+            }
+            return base + surl
+        },
+        handleTreeClick (data, node) {
+            let o = {
+                ids: [],
+                s: false
+            }
+            if (node.checked) {
+                o.s = true
+                const dg = (item) => {
+                    let a = item.children
+                    if (item.children) {
+                        a.forEach(itm => {
+                            dg(itm)
+                        })
+                    } else o.ids.push(item.dbId)
+                }
+                dg(data)
+            }
+            this.iframe.postMessage({
+                t: 'click',
+                s: true,
+                o: o
+            }, '*')
+        },
         handleTreeCheck (a, b) {
             let arr = [
                 ...b.checkedKeys,
@@ -544,8 +643,21 @@ export default {
                 let d = e.data
                 if (d.sign === 'model') {
                     if (d.modelViewRoot) {
-                        this.modelInfo.tree = d.modelViewRoot.children
-                        // console.log(this.modelInfo.tree)
+                        let root = d.modelViewRoot
+                        if (root.length === 1) {
+                            this.modelInfo.tree = root[0].children
+                        } else if (root.length > 1 && this.showModel === 'more') {
+                            this.modelInfo.tree = []
+                            let mData = this.moreModel.data
+                            root.forEach((item, index) => {
+                                let cind = Math.abs(root.length - index -1)
+                                this.modelInfo.tree.push({
+                                    dbId: `##${cind + 1}##`,
+                                    name: mData[cind].oths,
+                                    children: item.children
+                                })
+                            })
+                        }
                     }
                     if (d.modelLoadingStatus) this.modelInfo.status = true
                 }
