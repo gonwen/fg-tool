@@ -1,6 +1,11 @@
 <template>
     <div>
-        <svg :id="$options.name" style="border: 1px solid #eee;" width="800" height="600"></svg>
+        <!--<el-slider v-model="width" :min="160" :max="1600"></el-slider>
+        <el-slider v-model="height" :min="120" :max="900"></el-slider>-->
+        <div class="svg">
+            <svg :id="$options.name" :width="width" :height="height" @click="changeModel('china')" :class="{'svg-min': model === 'world'}"></svg>
+            <svg :id="$options.name + 'world'" :width="wdWidth" :height="wdHeight" @click="changeModel('world')" :class="{'svg-min': model === 'china'}"></svg>
+        </div>
         <div class="map-ceng" v-if="ceng.show" :style="{top: `${ceng.y}px`, left: `${ceng.x}px`}">
             <div class="ceng-main">
                 <h6>{{ceng.n}}</h6>
@@ -18,6 +23,11 @@ export default {
     name: 'd3Map',
     data () {
         return {
+            width: 800,
+            height: 600,
+            wdWidth: 200,
+            wdHeight: 140,
+            model: 'china',
             mapData: {},
             worldmapData: {},
             margin: {
@@ -70,7 +80,9 @@ export default {
                 s: '45645',
                 x: 0,
                 y: 0
-            }
+            },
+            svg: null,
+            worldSvg: null
         }
     },
     methods: {
@@ -83,6 +95,16 @@ export default {
                 data = res.data
             }
             this.getParseData(data, this.OriginData)
+            return data
+        },
+        async getWorldMapData () {
+            let data = {}
+            let res = await requestResponse('get', 'static/data/worldmap.json')
+            if (res.data) {
+                this.worldmapData = res.data
+                data = res.data
+                console.log(JSON.stringify(data))
+            }
             return data
         },
         getParseData (map, origin) {
@@ -99,18 +121,11 @@ export default {
             })
         },
         async init () {
-            const geoData = await this.getMapData()
-            let margin = this.margin
-            let width = 800 - margin.left - margin.right
-            let height = 600 - margin.top - margin.bottom
+            const geoData = this.mapData
+
             const svg = d3.select(`svg#${this.$options.name}`)
-            const projection = d3.geoMercator()
-                .center([110, 25])
-                .scale([500])
-                .translate([450,350])
-                .precision([.1])
-            const geoPath = d3.geoPath()
-                .projection(projection)
+            svg.select('g').remove()
+            this.svg = svg
 
             let ceng = this.ceng
             let that = this
@@ -120,9 +135,9 @@ export default {
                 .data(geoData.features)
                 .enter()
                 .append('path')
-                .attr('d', d => geoPath(d))
+                .attr('d', d => this.geoPath(d))
                 .attr('stroke', '#eee')
-                .attr('fill', d => d.properties.name === '湖南省' ? '#ddd' : '#eee')
+                .attr('fill', d => d.properties.name === '北京市' ? '#999' : '#eee')
                 .attr('stroke-width', 1)
                 .attr('stroke', '#d9d9d9')
                 .on('mouseover', function(d, i) {
@@ -131,7 +146,7 @@ export default {
                 .on('mouseleave', function(d) {
                     ceng.show = false
                     // ceng.attr('display', 'none')
-                    d3.select(this).attr("fill", '#eee')
+                    d3.select(this).attr("fill", d => d.properties.name === '北京市' ? '#999' : '#eee')
                 })
 
             svg.call(d3.zoom()
@@ -152,6 +167,33 @@ export default {
             this.creatText(ceng, 'p', 10, 30, '#eee')
             this.creatText(ceng, 's', 10, 45, '#eee')
             */
+        },
+        geoPath (d, t) {
+            let w = t ? this.wdWidth : this.width
+            let h = t ? this.wdHeight : this.height
+            let zm = t ? 0.2 : 7 / 8
+            let pro = d3.geoMercator()
+                .center([t ? 0 : 110, t ? 0 : 25])
+                .scale([w <= h ? w * zm : h * zm])
+                .translate([w / 2, (h / 2) * (t ? 1.4 : 1.2)])
+                .precision([.1])
+            return d3.geoPath().projection(pro)(d)
+        },
+        async initWord () {
+            const geoData = this.worldmapData
+
+            const svg = d3.select(`svg#${this.$options.name}world`)
+            svg.select('g').remove()
+            this.worldSvg = svg
+
+            const wrapper = svg.append('g').attr('class', 'wrapper')
+            wrapper.selectAll('path')
+                .data(geoData.features)
+                .enter()
+                .append('path')
+                .attr('d', d => this.geoPath(d, true))
+                .attr('fill', '#eee')
+                .attr('stroke-width', 1)
         },
         moveOverInfo (dom, d, i) {
             let ceng = this.ceng
@@ -187,15 +229,61 @@ export default {
                 .attr('font-size', 10)
                 .attr('text-anchor', 'left')
                 .attr('dominant-baseline', 'central')
+        },
+        changeModel (sign) {
+            let m = this.model
+            if (sign !== m) this.model = m === 'china' ? 'world' : 'china'
         }
     },
-    created () {
+    watch: {
+        'width' (val) {
+            if (this.svg) this.init()
+        },
+        'height' (val) {
+            if (this.svg) this.init()
+        },
+        'wdWidth' (val) {
+            if (this.worldSvg) this.initWord()
+        },
+        'wdHeight' (val) {
+            if (this.worldSvg) this.initWord()
+        },
+        'model' (val) {
+            this.ceng.show = false
+            let size = [800, 600, 200, 140]
+            let f = val === 'china'
+            this.width = f ? size[0] : size[2]
+            this.height = f ? size[1] : size[3]
+            this.wdWidth = f ? size[2] : size[0]
+            this.wdHeight = f ? size[3] : size[1]
+        }
+    },
+    async created () {
+        await this.getMapData()
+        await this.getWorldMapData()
         this.init()
+        this.initWord()
     }
 }
 </script>
 
 <style scoped lang="scss">
+.svg{
+    margin: 0 auto;
+    border: 1px solid #eee;
+    position: relative;
+    width: 800px;
+    height: 600px;
+    .svg-min{
+        position: absolute;
+        width: 200px;
+        height: 140px;
+        border: 1px solid #eee;
+        left: 20px;
+        bottom: 20px;
+        z-index: 2;
+    }
+}
 .map-ceng{
     position: fixed;
     top: 0;
@@ -216,7 +304,7 @@ export default {
     p{
         font-size: 12px;
         span{
-            color: #0096e2;
+            color: #ccc;
             margin-left: 5px;
         }
     }
