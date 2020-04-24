@@ -236,7 +236,13 @@ export default {
             checkedIds: [], // 选中的 dbid
             showModel: 'more',
             modelFileUrl: '',
-            base64FileUrl: 'aHR0cHM6Ly9teHpoLXByb2Qub3NzLWNuLWJlaWppbmcuYWxpeXVuY3MuY29tL21vZGVsRm9sZGVyX2IzOTMyZjA5LTNiZjgtNDNmZC04MTE2LTI3MzRmNjNjZDdhNS9vdXRwdXQvM2Quc3Zm',
+            base64FileUrl:
+                'aHR0cHM6Ly9teHpoLXByb2Qu' +
+                'b3NzLWNuLWJlaWppbmcuYWxp' +
+                'eXVuY3MuY29tL21vZGVsRm9s' +
+                'ZGVyX2IzOTMyZjA5LTNiZjgt' +
+                'NDNmZC04MTE2LTI3MzRmNjNj' +
+                'ZDdhNS9vdXRwdXQvM2Quc3Zm',
             // 合模配置信息
             moreModel: {
                 data: [
@@ -244,14 +250,6 @@ export default {
                         path: 'https://mxzh-prod.oss-cn-beijing.aliyuncs.com/modelFolder_0302677f-f855-4c52-8c90-911560a13efd/output/3d.svf',
                         oths: '立式多级离心泵'
                     },
-                    // {
-                    //     path: 'https://mxzh-prod.oss-cn-beijing.aliyuncs.com/modelFolder_ded9c7fd-a43c-4e69-90c1-5f63a307c912/output/3d.svf',
-                    //     oths: '碳钢式隔膜气压罐'
-                    // },
-                    // {
-                    //     path: 'file=https://mxzh-prod.oss-cn-beijing.aliyuncs.com/modelFolder_7c7020cb-0223-4d97-8a88-54371fa8bb7e/output/3d.svf',
-                    //     oths: '金光混流风机（JGXF-2.5-C）'
-                    // },
                     {
                         path: 'https://mxzh-prod.oss-cn-beijing.aliyuncs.com/modelFolder_e37a185a-420c-4e13-80ad-852b84affbe2/output/3d.svf',
                         oths: '给水设备-泵'

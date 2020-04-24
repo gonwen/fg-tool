@@ -13,6 +13,9 @@
             <el-tab-pane label="甘特图" name="gantt">
                 <d3-gantt v-if="activeName === 'gantt'"></d3-gantt>
             </el-tab-pane>
+            <el-tab-pane label="Map" name="map">
+                <d3-map v-if="activeName === 'map'"></d3-map>
+            </el-tab-pane>
         </el-tabs>
     </div>
 </template>
@@ -21,12 +24,14 @@ import d3Graph from '../components/d3/graph'
 import d3Bar from '../components/d3/bar'
 import d3Tree from '../components/d3/tree'
 import d3Gantt from '../components/d3/gantt'
+import d3Map from '../components/d3/map'
 export default {
     components: {
         d3Graph,
         d3Bar,
         d3Tree,
-        d3Gantt
+        d3Gantt,
+        d3Map
     },
     data () {
         return {
@@ -51,6 +56,11 @@ export default {
                     label: '甘特图',
                     value: 'gantt',
                     tpl: 'd3-gantt'
+                },
+                {
+                    label: 'Map',
+                    value: 'map',
+                    tpl: 'd3-map'
                 }
             ]
         }
