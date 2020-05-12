@@ -53,7 +53,7 @@ export default {
             serUrl: 'http://172.10.10.176:3093/api/file/',
             curSerUrl: 'http://172.10.10.176:3093',
             list: [],
-            filePath: 'E:\\woker\\github\\fg-tool',
+            filePath: 'E:\\woker\\github\\fg-template\\ts-nuxt-template',
             defaultProps: {
                 children: 'children',
                 label: 'name'

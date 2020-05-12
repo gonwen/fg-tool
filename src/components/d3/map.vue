@@ -82,7 +82,50 @@ export default {
                 y: 0
             },
             svg: null,
-            worldSvg: null
+            worldSvg: null,
+            worldOrigin: [
+                {
+                    name: '中国',
+                    value: [104.195397, 35.86166]
+                },
+                {
+                    name: '俄罗斯',
+                    value: [37.511977, 55.767799]
+                },
+                {
+                    name: '白俄罗斯',
+                    value: [27.529114, 53.954141]
+                },
+                {
+                    name: '乌克兰',
+                    value: [30.509476, 50.475794]
+                },
+                {
+                    name: '马来西亚',
+                    value: [101.681748, 3.197445]
+                },
+                {
+                    name: '哈萨克斯坦',
+                    value: [71.475657, 51.281803]
+                },
+                {
+                    name: '巴西',
+                    value: [-47.942336, -15.778623]
+                },
+                {
+                    name: '加拿大',
+                    value: [-75.714762, 45.591873]
+                },
+                {
+                    name: '澳大利亚',
+                    value: [149.098451, -35.259215]
+                },
+                {
+                    name: '美国',
+                    value: [-95.712891, 37.09024]
+                }
+            ],
+            worldCircle: null
         }
     },
     methods: {
@@ -103,7 +146,6 @@ export default {
             if (res.data) {
                 this.worldmapData = res.data
                 data = res.data
-                console.log(JSON.stringify(data))
             }
             return data
         },
@@ -167,8 +209,9 @@ export default {
             this.creatText(ceng, 'p', 10, 30, '#eee')
             this.creatText(ceng, 's', 10, 45, '#eee')
             */
+            /*<circle cx="100" cy="50" r="40" stroke="black" stroke-width="2" fill="red"/>*/
         },
-        geoPath (d, t) {
+        geoProjection (t) {
             let w = t ? this.wdWidth : this.width
             let h = t ? this.wdHeight : this.height
             let zm = t ? 0.2 : 7 / 8
@@ -177,6 +220,10 @@ export default {
                 .scale([w <= h ? w * zm : h * zm])
                 .translate([w / 2, (h / 2) * (t ? 1.4 : 1.2)])
                 .precision([.1])
+            return pro
+        },
+        geoPath (d, t) {
+            let pro = this.geoProjection(t)
             return d3.geoPath().projection(pro)(d)
         },
         async initWord () {
@@ -194,6 +241,54 @@ export default {
                 .attr('d', d => this.geoPath(d, true))
                 .attr('fill', '#eee')
                 .attr('stroke-width', 1)
+            this.createAllCircles()
+        },
+        createAllCircles () {
+            this.worldSvg.select('g.g-circles').remove()
+            this.worldCircle = this.worldSvg.append('g')
+                .attr('class', 'g-circles')
+            this.worldOrigin.forEach(item => {
+                this.drawCircles(item)
+            })
+        },
+        drawCircles (item) {
+            let zm = this.model === 'china' ? 0.2 : 7 / 8
+            let p = this.geoProjection(true)(item.value)
+            let x = p[0]
+            let y = p[1]
+            let g = this.worldCircle.append('g')
+                .attr('transform', `translate(${x}, ${y})`)
+            let text = g.append('text')
+                .text(item.name)
+                .attr('x', 0)
+                .attr('y', -10)
+                .attr('font-size', '10px')
+                .attr('fill', '#999')
+            this.drawCircle(g, zm, '0s')
+            this.drawCircle(g, zm, '1s')
+            this.drawCircle(g, zm, '2s')
+            return g
+        },
+        drawCircle (g, zm, bt) {
+            let c = g.append('circle')
+                .attr('cx', 0)
+                .attr('cy', 0)
+                .attr('fill', 'rgba(255,255,255,0)')
+                .attr('r', 5 * zm)
+                .attr('stroke', '#666')
+                .attr('stroke-width', 1)
+            c.append('animate')
+                .attr('attributeName', 'r')
+                .attr('values', '2;10;2')
+                .attr('begin', bt)
+                .attr('dur', '4s')
+                .attr('repeatCount', 'indefinite')
+            c.append('animate')
+                .attr('attributeName', 'stroke')
+                .attr('values', '#666;rgba(102,102,102,0);#666')
+                .attr('begin', bt)
+                .attr('dur', '4s')
+                .attr('repeatCount', 'indefinite')
         },
         moveOverInfo (dom, d, i) {
             let ceng = this.ceng
