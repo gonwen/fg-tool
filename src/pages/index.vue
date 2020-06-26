@@ -13,9 +13,17 @@
             <div class="box-card-ceng el-loading-mask" v-if="!(isShow || key === ckey)"></div>
         </el-card>
         <el-input v-if="!(isShow || key === ckey)" v-model="key" placeholder="请输入通行CODE"></el-input>
+        <audio
+            ref="audio"
+            controls
+            src="https://resource.ciip.com/common/mp3/5a5852903068d.mp3"
+            style="width: 600px;height: 30px;opacity: 0.1"
+        ></audio>
+        <span @mouseover="playAudio('I')" @mouseleave="playAudio('O')">测试区域</span>
     </div>
 </template>
 <script>
+// style="width: 0;height: 0;position: relative;z-index: 0;opacity: 0;"
 export default {
     data () {
         return {
@@ -44,6 +52,19 @@ export default {
                     name: 'IMAGE COMPRESS'
                 }
             ]
+        }
+    },
+    mounted () {
+        this.$refs.audio.muted = true
+    },
+    methods: {
+        playAudio (type) {
+            if (type === 'I') {
+                this.$refs.audio.play()
+            } else {
+                this.$refs.audio.pause()
+                this.$refs.audio.load()
+            }
         }
     }
 }

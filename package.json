@@ -22,6 +22,7 @@
     "compressorjs": "^1.0.6",
     "d3": "^5.15.0",
     "element-ui": "2.12.0",
+    "html2canvas": "^1.0.0-rc.5",
     "md5": "^2.2.1",
     "upload-oss-cropper": "^1.0.9",
     "vue": "^2.6.10",

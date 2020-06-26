@@ -64,6 +64,14 @@ export default new Router({
             }
         },
         {
+            path: '/capture',
+            component: resolve => require(['@/pages/capture.vue'], resolve),
+            meta: {
+                title: 'CAPTURE SHOW FRONT-END-TOOL',
+                auth: false
+            }
+        },
+        {
             path: '*',
             redirect: '/'
         }

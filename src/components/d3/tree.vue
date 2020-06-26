@@ -41,7 +41,25 @@ export default {
             links: [],
             dTreeData: null,
             transform: null,
-            margin: { top: 20, right: 90, bottom: 30, left: 90 }
+            margin: { top: 20, right: 90, bottom: 30, left: 90 },
+            color: [
+                {
+                    text: '#fff',
+                    bg: '#666'
+                },
+                {
+                    text: '#666',
+                    bg: '#ccc'
+                },
+                {
+                    text: '#666',
+                    bg: '#eee'
+                },
+                {
+                    text: '#fff',
+                    bg: '#11a9e8'
+                }
+            ]
         }
     },
     methods: {
@@ -91,6 +109,7 @@ export default {
                 ${d.y} ${d.x}`
         },
         getNodesAndLinks () {
+            console.log(this.treemap(this.root))
             this.dTreeData = this.treemap(this.root)
             this.nodes = this.dTreeData.descendants()
             this.links = this.dTreeData.descendants().slice(1)
@@ -111,32 +130,6 @@ export default {
                 .on('click', this.clickNode)
                 .attr('transform', d => 'translate(' + source.y0 + ',' + source.x0 + ')')
 
-            let rect = nodeEnter.append('rect')
-                .attr('x', (d, i) => 0)
-                .attr('y', d => -15)
-                .attr('width', (d, i) => {
-                    console.log('***', d)
-                    console.log('**i*', i)
-                    console.log(nodeEnter._groups[0])
-                    return 10
-                })
-                .attr('height', 30)
-                .attr('fill', '#eee')
-
-            console.log('***************', rect)
-
-
-            // nodeEnter.append('circle')
-            //     .attr('r', 10)
-            //     .style('fill', d => d.children || d._children ? '#bbb' : '#fff')
-
-            /*
-                .attr('x', (d,i) => xScale.step() * (i + xScale.paddingOuter()) + rectPadding / 2)
-                .attr('y', d => yScale(d))
-                .attr('width', () => xScale.step() - rectPadding)
-                .attr('height', d => height - marge.top - marge.bottom - yScale(d))
-                .attr('fill', '#999')
-            */
             nodeEnter.append('text')
                 .attr('x', 15)
                 .attr('dy', '.35em')
@@ -145,59 +138,77 @@ export default {
                 .text(d => d.data.name)
                 .style('fill-opacity', 1e-6)
 
+            let rect = nodeEnter.append('rect')
+                .attr('x', (d, i) => 0)
+                .attr('y', d => -15)
+                .attr('width', (d, i) => {
+                    const dom = nodeEnter['_groups'][0][i].children[0]
+                    // const w = dom.clientWidth || dom.scrollWidth
+                    // console.log(d.data.name + '**scrollWidth**' + dom.scrollWidth + '**clientWidth**' + dom.clientWidth)
+                    return dom.clientWidth || dom.scrollWidth
+                })
+                .attr('height', 30)
+                .attr('fill', d => this.color[d.depth >= 4 ? 3 : d.depth].bg)
+                .attr('fill-opacity', 1)
+                .attr('rx', 6)
+                .attr('ry', 6)
+
+            nodeEnter.append('text')
+                .attr('class', 'text')
+                .attr('x', 15)
+                .attr('dy', '.35em')
+                .attr('text-anchor', 'start')
+                .attr('font-size', 12)
+                .attr('fill', d => this.color[d.depth >= 4 ? 3 : d.depth].text)
+                .text(d => d.data.name)
+                .style('fill-opacity', 1e-6)
+
+
             let nodeUpdate = nodeEnter.merge(node)
                 .transition()
                 .duration(this.duration)
-                .attr('transform', d => 'translate(' + d.y + ',' + d.x + ')')
+                .attr('transform', (d, i) => 'translate(' + d.y + ',' + d.x + ')')
 
-            nodeUpdate.select("circle")
-                .attr("r", 10)
-                .attr("fill", "white")
-                .attr("stroke", "#999")
-                .attr("stroke-width", 1)
-                .style("fill", function(d) { return d.children || d._children ? "#bbb" : "#fff"; });
 
-            nodeUpdate.select("text")
-                .style("fill-opacity", 1);
+            nodeUpdate.select('text.text')
+                .style('fill-opacity', 1)
 
             let nodeExit = node.exit()
                 .transition()
                 .duration(this.duration)
-                .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
-                .remove();
+                .attr('transform', (d, i) => 'translate(' + source.y + ',' + source.x + ')')
+                .remove()
 
-            nodeExit.select("circle")
-                .attr("r", 1e-6);
 
-            nodeExit.select("text")
-                .style("fill-opacity", 1e-6);
+            nodeExit.select('text.text')
+                .style('fill-opacity', 1e-6)
 
             let link = container.selectAll('path.link')
                 .data(this.links, d => { return d.id })
 
 
-            let linkEnter = link.enter().insert("path", "g")
-                .attr("class", "link")
-                .attr("d", d => {
-                    let o = {x: source.x0, y: source.y0};
+            let linkEnter = link.enter().insert('path', 'g')
+                .attr('class', 'link')
+                .attr('d', d => {
+                    let o = {x: source.x0, y: source.y0}
                     return this.diagonal(o, o)
                 })
-                .attr("fill", 'none')
-                .attr("stroke-width", 1)
+                .attr('fill', 'none')
+                .attr('stroke-width', 1)
                 .attr('stroke', '#ccc')
 
             let linkUpdate = linkEnter.merge(link)
             linkUpdate.transition()
                 .duration(this.duration)
-                .attr('d', d => { return this.diagonal(d, d.parent) })
+                .attr('d', d => this.diagonal(d, d.parent))
 
             link.exit().transition()
                 .duration(this.duration)
-                .attr("d", d => {
-                    let o = {x: source.x, y: source.y};
+                .attr('d', d => {
+                    let o = {x: source.x, y: source.y}
                     return this.diagonal(o, o)
                 })
-                .remove();
+                .remove()
 
             this.nodes.forEach(d => {
                 d.x0 = d.x
