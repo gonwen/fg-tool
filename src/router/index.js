@@ -72,6 +72,22 @@ export default new Router({
             }
         },
         {
+            path: '/fingerprint',
+            component: resolve => require(['@/pages/fingerprint.vue'], resolve),
+            meta: {
+                title: 'FINGERPRINT SHOW FRONT-END-TOOL',
+                auth: false
+            }
+        },
+        {
+            path: '/media',
+            component: resolve => require(['@/pages/media.vue'], resolve),
+            meta: {
+                title: 'MEDIA SHOW FRONT-END-TOOL',
+                auth: false
+            }
+        },
+        {
             path: '*',
             redirect: '/'
         }
