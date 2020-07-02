@@ -88,6 +88,14 @@ export default new Router({
             }
         },
         {
+            path: '/svg',
+            component: resolve => require(['@/pages/svg.vue'], resolve),
+            meta: {
+                title: 'SVG SHOW FRONT-END-TOOL',
+                auth: false
+            }
+        },
+        {
             path: '*',
             redirect: '/'
         }
