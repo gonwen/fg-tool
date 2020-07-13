@@ -96,6 +96,14 @@ export default new Router({
             }
         },
         {
+            path: '/psd',
+            component: resolve => require(['@/pages/psd.vue'], resolve),
+            meta: {
+                title: 'PSD PARSE SHOW FRONT-END-TOOL',
+                auth: false
+            }
+        },
+        {
             path: '*',
             redirect: '/'
         }

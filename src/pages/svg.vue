@@ -89,7 +89,41 @@
                 </animateMotion>
             </rect>
         </g>-->
-        <g transform ="translate(50, 50)">
+        <g transform ="translate(130, 140)">
+            <circle r="0" cx="10" cy="10" stroke="#ccc" fill="#eee">
+                <animate
+                    id="cOne"
+                    attributeName="r"
+                    attributeType="XML"
+                    from="0" to="6"
+                    begin="0s;cTwo.end" dur="1s" fill="freeze"
+                ></animate>
+                <animate
+                    id="cOnec"
+                    attributeName="r"
+                    attributeType="XML"
+                    from="6" to="0"
+                    begin="cOne.end" dur="1s" fill="freeze"
+                ></animate>
+            </circle>
+            <circle r="0" cx="30" cy="10" stroke="#ccc" fill="#eee">
+                <animate
+                    id="cTwo"
+                    attributeName="r"
+                    attributeType="XML"
+                    from="0" to="6"
+                    begin="cOne.end" dur="1s" fill="freeze"
+                ></animate>
+                <animate
+                    id="cTwoc"
+                    attributeName="r"
+                    attributeType="XML"
+                    from="6" to="0"
+                    begin="cTwo.end" dur="1s" fill="freeze"
+                ></animate>
+            </circle>
+        </g>
+        <!--<g transform ="translate(50, 50)">
             <circle :r="clock.cw / 2" stroke="#ccc" fill="none" :transform ="`translate(${clock.cw / 2}, ${clock.ch / 2})`"></circle>
             <g
                 v-for="(item, index) in drawCalibration()"
@@ -122,7 +156,7 @@
             ></rect>
             <circle r="4" stroke="#999" fill="#ccc" :transform ="`translate(${clock.cw / 2}, ${clock.ch / 2})`"></circle>
             <text text-anchor="middle" font-size="12" fill="#999" :transform ="`translate(${clock.cw / 2}, ${clock.ch + 20})`">{{clock.c}}</text>
-        </g>
+        </g>-->
     </svg>
 </template>
 
