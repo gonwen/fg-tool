@@ -1,5 +1,6 @@
-/build/
-/config/
+/.nuxt/
+/node_modules/
 /dist/
-/*.js
-/test/unit/coverage/
+/static/
+/test/
+/*.ts
