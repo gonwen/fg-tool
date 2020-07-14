@@ -45,6 +45,12 @@ import {
     Prop,
     Vue
 } from 'nuxt-property-decorator'
+interface Codemodel {
+    n: string,
+    v: string
+    ft: string
+    mime: string
+}
 
 @Component({
     name: 'codeEditor',
@@ -112,7 +118,7 @@ export default class CodeEditor extends Vue {
     }
     editor: any = null
     // codePreString: string = ''
-    codeMode: any[] = [
+    codeMode: Codemodel[] = [
         {
             n: 'HTML',
             v: 'htmlmixed',
@@ -186,7 +192,7 @@ export default class CodeEditor extends Vue {
         if (str) {
             const type = this.codeConfig.mode
             let info: any = {}
-            this.codeMode.forEach((item: any) => {
+            this.codeMode.forEach((item: Codemodel) => {
                 if (item.v === type) {
                     info = item
                 }

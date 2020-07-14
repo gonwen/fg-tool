@@ -30,7 +30,18 @@ import {
 } from 'nuxt-property-decorator'
 import {requestResponse} from '~/../config/axios.conf'
 const d3 = require('d3')
-const originDataStr: string = '[{"n":"北京","p":"2747","s":"14578"},{"n":"江苏","p":"1126","s":"7862"},{"n":"广东","p":"3846","s":"17571"},{"n":"贵州","p":"166","s":"152"},{"n":"河南","p":"1024","s":"2526"},{"n":"天津","p":"745","s":"887"},{"n":"河北","p":"1364","s":"13333"},{"n":"江西","p":"456","s":"4700"},{"n":"内蒙古","p":"236","s":"971"},{"n":"广西","p":"87","s":"933"},{"n":"辽宁","p":"896","s":"1311"},{"n":"吉林","p":"678","s":"865"},{"n":"四川","p":"1103","s":"775"},{"n":"甘肃","p":"678","s":"679"},{"n":"湖北","p":"1117","s":"4551"},{"n":"上海","p":"1813","s":"12489"},{"n":"浙江","p":"2274","s":"1443"},{"n":"湖南","p":"980","s":"1376"},{"n":"山东","p":"1587","s":"307"},{"n":"陕西","p":"759","s":"291"},{"n":"黑龙江","p":"469","s":"291"},{"n":"山西","p":"682","s":"217"},{"n":"云南","p":"96","s":"165"},{"n":"重庆","p":"1328","s":"108"},{"n":"福建","p":"779","s":"104"},{"n":"青海","p":"30","s":"10"},{"n":"新疆","p":"93","s":"9"},{"n":"安徽","p":"483"},{"n":"宁夏","p":"79"},{"n":"西藏","p":"10"},{"n":"海南","p":"19"},{"n":"台湾","p":"0"},{"n":"香港","p":"0"},{"n":"澳门","p":"0"}]'
+const originDataStr: string = '' +
+    '[{"n":"北京","p":"2747","s":"14578"},{"n":"江苏","p":"1126","s":"7862"},{"n":"广东","p":"3846","s":"17571"},' +
+    '{"n":"贵州","p":"166","s":"152"},{"n":"河南","p":"1024","s":"2526"},{"n":"天津","p":"745","s":"887"},' +
+    '{"n":"河北","p":"1364","s":"13333"},{"n":"江西","p":"456","s":"4700"},{"n":"内蒙古","p":"236","s":"971"},' +
+    '{"n":"广西","p":"87","s":"933"},{"n":"辽宁","p":"896","s":"1311"},{"n":"吉林","p":"678","s":"865"},' +
+    '{"n":"四川","p":"1103","s":"775"},{"n":"甘肃","p":"678","s":"679"},{"n":"湖北","p":"1117","s":"4551"},' +
+    '{"n":"上海","p":"1813","s":"12489"},{"n":"浙江","p":"2274","s":"1443"},{"n":"湖南","p":"980","s":"1376"},' +
+    '{"n":"山东","p":"1587","s":"307"},{"n":"陕西","p":"759","s":"291"},{"n":"黑龙江","p":"469","s":"291"},' +
+    '{"n":"山西","p":"682","s":"217"},{"n":"云南","p":"96","s":"165"},{"n":"重庆","p":"1328","s":"108"},' +
+    '{"n":"福建","p":"779","s":"104"},{"n":"青海","p":"30","s":"10"},{"n":"新疆","p":"93","s":"9"},' +
+    '{"n":"安徽","p":"483"},{"n":"宁夏","p":"79"},{"n":"西藏","p":"10"},{"n":"海南","p":"19"},' +
+    '{"n":"台湾","p":"0"},{"n":"香港","p":"0"},{"n":"澳门","p":"0"}]'
 interface Worldorigin {
     name: string
     value: [number, number]
@@ -186,31 +197,16 @@ export default class D3Map extends Vue {
                 wrapper.style('stroke-width', `${1.5 / d3.event.transform.k}px`)
                 wrapper.attr('transform', d3.event.transform)
             }))
-        /* svg 渲染 层
-        ceng = svg.append('g').attr('display', 'none')
-        ceng.append('rect')
-            .attr('width', 100)
-            .attr('height', 60)
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('fill', 'rgba(102,102,102,0.8)')
-            .attr('rx', 4)
-        this.creatText(ceng, 'name', 10, 15, '#fff')
-        this.creatText(ceng, 'p', 10, 30, '#eee')
-        this.creatText(ceng, 's', 10, 45, '#eee')
-        */
-        /* <circle cx="100" cy="50" r="40" stroke="black" stroke-width="2" fill="red"/> */
     }
     geoProjection (t: any) {
         const w = t ? this.wdWidth : this.width
         const h = t ? this.wdHeight : this.height
         const zm = t ? 0.2 : 7 / 8
-        const pro = d3.geoMercator()
+        return d3.geoMercator()
             .center([t ? 0 : 110, t ? 0 : 25])
             .scale([w <= h ? w * zm : h * zm])
             .translate([w / 2, (h / 2) * (t ? 1.4 : 1.2)])
             .precision([0.1])
-        return pro
     }
     geoPath (d: any, t?: any) {
         const pro = this.geoProjection(t)
@@ -221,7 +217,9 @@ export default class D3Map extends Vue {
 
         const svg = d3.select(`svg#${this.$options.name}world`)
         svg.select('g').remove()
+        svg.html('')
         this.worldSvg = svg
+        console.log(svg)
 
         const wrapper = svg.append('g').attr('class', 'wrapper')
         wrapper.selectAll('path')
@@ -237,48 +235,48 @@ export default class D3Map extends Vue {
         this.worldSvg.select('g.g-circles').remove()
         this.worldCircle = this.worldSvg.append('g')
             .attr('class', 'g-circles')
-        this.worldOrigin.forEach((item: Worldorigin) => {
-            this.drawCircles(item)
+        this.worldOrigin.forEach((item: Worldorigin, index: number) => {
+            this.drawCircles(item, index)
         })
     }
-    drawCircles (item: any) {
+    drawCircles (item: any, index: number) {
         const zm = this.model === 'china' ? 0.2 : 7 / 8
         const p = this.geoProjection(true)(item.value)
         const x = p[0]
         const y = p[1]
+        const uuid = this.getUuid()
+        const id = `${uuid}g${index}`
         const g = this.worldCircle.append('g')
+            .attr('id', id)
             .attr('transform', `translate(${x}, ${y})`)
-        g.append('text')
-            .text(item.name)
-            .attr('x', 0)
-            .attr('y', -10)
-            .attr('font-size', '10px')
-            .attr('fill', '#999')
-        this.drawCircle(g, zm, '0s')
-        this.drawCircle(g, zm, '1s')
-        this.drawCircle(g, zm, '2s')
+        let html = `<text x="0" y="-10" font-size="10px" fill="#999">${item.name}</text>`
+        html += this.drawCircleAnimates(zm, id + 'cri')
+        g.html(html)
         return g
     }
-    drawCircle (g: any, zm: any, bt: any) {
-        const c = g.append('circle')
-            .attr('cx', 0)
-            .attr('cy', 0)
-            .attr('fill', 'rgba(255,255,255,0)')
-            .attr('r', 5 * zm)
-            .attr('stroke', '#666')
-            .attr('stroke-width', 1)
-        c.append('animate')
-            .attr('attributeName', 'r')
-            .attr('values', '2;10;2')
-            .attr('begin', bt)
-            .attr('dur', '4s')
-            .attr('repeatCount', 'indefinite')
-        c.append('animate')
-            .attr('attributeName', 'stroke')
-            .attr('values', '#666;rgba(102,102,102,0);#666')
-            .attr('begin', bt)
-            .attr('dur', '4s')
-            .attr('repeatCount', 'indefinite')
+    drawCircleAnimates (zm: number, id: string) {
+        let circleHtml = ''
+        circleHtml += this.drawCircleAnimate(zm, id + 'f', `0s;${id}t.end-2s`)
+        circleHtml += this.drawCircleAnimate(zm, id + 's', `${id}f.end-2s`)
+        circleHtml += this.drawCircleAnimate(zm, id + 't', `${id}s.end-2s`)
+        return circleHtml
+    }
+    drawCircleAnimate (zm: number, id: string, bef: string = '0s') {
+        return `<circle cx="0" cy="0" fill="rgba(255,255,255,0)" r="${5 * zm}"
+                stroke="#666" stroke-width="1">
+                <animate id="${id}" attributeName="r" values="2;10;2"
+                repeatCount="indefinite"
+                begin="${bef}" dur="4s" fill="freeze"></animate>
+                <animate attributeName="stroke"
+                values="#666;rgba(102,102,102,0);#666"
+                repeatCount="indefinite"
+                begin="${bef}" dur="4s"></animate>
+                </circle>`
+    }
+    getUuid () {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1)
     }
     moveOverInfo (dom: any, i: any) {
         const ceng = this.ceng
