@@ -31,7 +31,7 @@ const FILTER_FORMATER = {
              *              model => 字符长度模式  true 为 占位符长度 false 为字符串长度
              * @return    string
              * */
-            wordNum (val: string, n: number, model: boolean) {
+            wordNum (val: string, n: number, model: boolean = false) {
                 let str = val || ''
                 let num = n
                 if (

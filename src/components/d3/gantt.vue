@@ -12,7 +12,7 @@
                     :src="getIframeUrl()"
                 ></iframe>
             </el-col>
-            <el-col :span="12">
+            <el-col v-if="!isEchartModel" :span="12">
                 <div
                     style="
                     max-height: 340px;
@@ -192,6 +192,7 @@
 import {
     Component,
     Watch,
+    Prop,
     Vue
 } from 'nuxt-property-decorator'
 const d3 = require('d3')
@@ -209,6 +210,10 @@ const d3 = require('d3')
     }
 })
 export default class D3Gantt extends Vue {
+    @Prop({
+        default: false
+    })
+    isEchartModel!: string
     dataForm: any = {
         data: [
             // {start: '2020-01-26', end: '2020-02-24', text: '地基基坑'},
@@ -284,7 +289,7 @@ export default class D3Gantt extends Vue {
         color: '#000000'
     }
     checkedIds: any = [] // 选中的 dbid
-    showModel: string = 'more'
+    showModel: string = this.isEchartModel ? 'echart' : 'more'
     // modelFileUrl: string = ''
     base64FileUrl: string =
         'aHR0cHM6Ly9teHpoLXByb2Qu' +
@@ -330,8 +335,9 @@ export default class D3Gantt extends Vue {
         }, '*')
     }
     getIframeUrl () {
-        const base = '../../model/test.html?'
+        let base = '../../model/test.html?'
         // const base = 'http://www.ciip.com/static/html/model/view.html?'
+        base += 'hdtl=e&'
         const qy = this.$route.query
         let surl = ''
         if (this.showModel === 'more') {
@@ -716,6 +722,9 @@ export default class D3Gantt extends Vue {
                 }
                 if (d.modelLoadingStatus) {
                     this.modelInfo.status = true
+                    if (this.isEchartModel && d.modelLoadingStatus === 2) {
+                        this.sentMessageModel()
+                    }
                 }
             }
         })
