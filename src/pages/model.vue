@@ -6,7 +6,11 @@
                     <span class="el-icon-back"></span>
                     返回列表
                 </nuxt-link>
-                <el-button>分享</el-button>
+                <share-cope :is-copy="true">
+                    <el-button slot="button">
+                        分享
+                    </el-button>
+                </share-cope>
                 <el-button>加入我的收藏库</el-button>
             </div>
             <nav>
@@ -110,9 +114,13 @@ import {
     Vue
 } from 'nuxt-property-decorator'
 import d3Gantt from '~/components/d3/gantt.vue'
+import shareCope from '~/components/shareAndCope.vue'
 
 @Component({
-    components: {d3Gantt},
+    components: {
+        d3Gantt,
+        shareCope
+    },
     head () {
         return {
             title: 'BUILDING MODEL PRODUCTS VIEW FRONT-END-TOOL'

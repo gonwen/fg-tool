@@ -2,8 +2,10 @@
 <template>
     <el-tooltip :placement="placement" popper-class="share-tooltip" effect="light">
         <div slot="content">
-            <span v-if="isCopy" @click="clipboardData">点击复制</span>
-            <div class="qscode-img">
+            <el-button v-if="isCopy" type="text" @click="clipboardData">
+                点击复制
+            </el-button>
+            <div v-else class="qscode-img">
                 <img :src="qrCode" alt="">
                 <span v-if="isShareIcon" class="icon-img">
                     <img :src="shareIcon" alt="">
