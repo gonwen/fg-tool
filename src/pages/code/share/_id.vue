@@ -58,7 +58,7 @@ export default class PageCodeShare extends Vue {
         const mode = (this.$refs.codeEditor as any).codeConfig.mode
         const res: any = await requestResponse('post', this.serUrl + 'sharecode/add', {name: md5, code, mode})
         if (res.data && res.data.flag) {
-            this.shareMd5 = window.location.origin + '/#/share/' + md5
+            this.shareMd5 = window.location.origin + '/code/share/' + md5
         } else {
             this.$notify({
                 title: '提示',
