@@ -170,10 +170,12 @@ export default class CodeEditor extends Vue {
         const editorBox = this.$refs.editorBox
         const codeMirror: any = require('~/plugins/codemirror')()
         this.editor = codeMirror.fromTextArea(editorBox, this.codeConfig)
-        const on = this.editor.on as any
-        on('blur', () => {
-            this.allLineCount = this.editor.lineCount()
-        })
+        try {
+            const on = this.editor.on as any
+            on('blur', () => {
+                this.allLineCount = this.editor.lineCount()
+            })
+        } catch {}
     }
     setEditotValue (str: string) {
         if (this.editor) {
