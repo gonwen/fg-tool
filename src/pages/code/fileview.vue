@@ -51,6 +51,7 @@
                         :effect="currFileInfo.value === item.value ? 'dark' : 'plain'"
                         size="mini"
                         closable
+                        :title="item.value"
                         @click="handleSelectTags(item, index, 'S')"
                         @close="handleSelectTags(item, index, 'C')"
                     >
