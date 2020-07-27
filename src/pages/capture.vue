@@ -19,8 +19,9 @@
             <div ref="dom" class="cap-content"></div>
         </div>
         <div v-else v-loading="loading">
-            <el-input v-model="website"></el-input>
-            <el-button @click="puppeteer">执行</el-button>
+            <el-input v-model="website" style="max-width: 900px;">
+                <el-button slot="append" @click="puppeteer">执行</el-button>
+            </el-input>
             <img v-if="baseImgs" :src="baseImgs" alt="">
         </div>
     </div>
@@ -35,7 +36,7 @@ import axios from 'axios'
 axios.defaults.withCredentials = false
 const baseSer = 'http://172.10.10.176:3093/api/'
 const getBase64ByUrl = (url: string) => axios.get(baseSer + 'file/fileByUrl?url=' + url)
-const getPuppeteerByUrl = (url: string) => axios.get(baseSer + 'file/fileByUrl?url=' + url)
+const getPuppeteerByUrl = (url: string) => axios.get(baseSer + 'capture/png?url=' + url)
 
 @Component({
     head () {
@@ -51,7 +52,7 @@ export default class PageCapture extends Vue {
     htmlStr: string = '<h5 style="text-align: center;padding-top: 20px;font-size: 18px; color: #666;">DOM 截图</h5><p><img style="overflow-wrap: break-word; cursor: pointer;" src="http://bbs.chinabim.com/data/attachment/forum/202005/06/140433iipnbrn8un68ndlt.png" width="600" height="332" alt="" /><span style="color: #444444; font-size: 14px;">当前，在室内装修工程中，普遍存在着一系列问题。例如：软件以及读图失真导致的最终工程造价偏离预期较大的问题，以及因为传统软件难以及时地调整与修改设计的错漏以及碰撞问题，使得工程建设出现工程延期以及造价成本抬高的问题。室内装修设计、施工是一项需要丰富经验的系统工作。在CAD时代下，精装修图纸绘制效率低下、错误不易被发现、重复出图等，一直困扰着项目各方。</span><img id="aimg_22365" class="zoom" style="overflow-wrap: break-word; cursor: pointer;" src="http://bbs.chinabim.com/data/attachment/forum/202005/06/140434cej1wjf5wfjcw3c6.png" width="600" alt="" /></p>'
     dom: any = null
     model: string = 'client'
-    website: string = ''
+    website: string = 'https://www.baidu.com'
     loading: boolean = false
     baseImgs: string = ''
     initDom () {
